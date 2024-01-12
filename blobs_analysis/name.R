@@ -3,10 +3,6 @@ name <- list(
   sample_identif = c("image","position_rostral","hemi"),
   roi_class = "property",
   marking_class = "marking",
-  class_cells = c("sharp", "smooth"), #whoops
-  #classes_in = c("sharp", "smooth")
-  #classes_out = c("background", "artifact")
-  #get_those_out = c("background", "artifact")
   x_new = "x_new",
   x_ref = "x_ref",
   y_new = "y_new",
@@ -19,7 +15,9 @@ name <- list(
   blobs_y_coord = "centroid_y_um",
   ref_class = "manual",
   area_cells = "new_nucleus_area",
-  area_blolbs = "ref_area_um^2")
+  area_blolbs = "ref_area_um^2",
+  group_to_compare = c("new","ref"),
+  without_this_class = "smooth")
 
 name_roi <- list()
 name_roi$roi_position_columns <- c(x0 = "startx_px", 
