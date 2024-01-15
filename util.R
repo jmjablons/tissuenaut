@@ -24,3 +24,7 @@ util$read_csv <- function(a){
     escape_double = FALSE, 
     show_col_types = FALSE,
     trim_ws = TRUE)}
+
+util$name_shorter_classif <- function(string){
+  stringr::str_split_i(string, "\\_", i =1)}
+
