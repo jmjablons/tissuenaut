@@ -7,8 +7,12 @@ source("blobs_analysis/name.R")
 
 # variables ---------------------------------------------------------------
 
-temp$classes_in = c("sharp", "smooth")
-temp$classes_out = c("background", "artifact")
+temp$classes_in = c("sharp", "smooth", 
+                    "strong", "weak", 
+                    "weak_stain2", "strong_stain2",
+                    "strong2", "weak2")
+temp$classes_out = c("background", "artifact", 
+                     "artifact2", "noise", "Ignore*")
 
 # read --------------------------------------------------------------------
 
@@ -76,5 +80,6 @@ write.csv2(d_blobs, file = paste("blobs_analysis/",
 
 write.csv2(d_cells, file = paste("blobs_analysis/", 
                                  "data/data_cells_preprocessed", "_", 
+                                 temp_classif_short,"_", 
                                  util$today(), 
                                  sep = ""))

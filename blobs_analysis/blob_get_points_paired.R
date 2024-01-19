@@ -29,12 +29,18 @@ d_points <- map_df(name$group_to_compare, function(p){
            filter(if_all(contains("id"), ~!is.na(.x))) %>%
            #filter(!is.na(across(contains("id")))) %>%
            rename_with(
-             ~stringr::str_replace_all(.,
-                                       pattern = paste("\\_{0,}",n,"\\_{0,}", sep = ""), 
-                                       replacement = "")) %>%
+             ~stringr::str_replace_all(
+               ., pattern = paste("\\_{0,}",p,"\\_{0,}", sep = ""), 
+               replacement = "")) %>%
            mutate(group = paste(p)))})
 
 d_points = d_points %>%
   mutate(r = radius(measure)) %>% #'util.R': radius
   tidyr::unite(name$sample_identif, sep = "_", col = "sample") %>%
   mutate(pair_index = ifelse(is.na(pair_index), 0, pair_index))
+
+# export ------------------------------------------------------------------
+
+write.csv2(d_points, 
+           file = paste("blobs_analysis/data/data_points_preprocessed", "_",
+                        temp_classif_short, "_", util$today(), sep = ""))

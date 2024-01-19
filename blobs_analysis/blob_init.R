@@ -5,8 +5,9 @@
 
 source("main_init.R") #dependencies #util #variables
 source("blobs_analysis/blob_source_data.R") #temp$files_manual etc 
+source("blobs_analysis/name.R")
 
-temp <- list()
+#temp <- list()
 temp$dir_path = "blobs_analysis/" # or set wd
 
 # dir tree ----------------------------------------------------------------
@@ -46,12 +47,13 @@ d_source = d_source %>%
   dplyr::rename_with( ~ stringr::str_replace_all(., "\\µ", "u")) %>%
   tidyr::separate_wider_delim(image,"_",names = c("image","slice")) %>%
   tidyr::separate_wider_regex(cols = slice,
-                              c(position_rostral = "\\d", hemi = "[a-z]{1,}"),
+                              c(position_rostral = "\\d", 
+                                hemi = "[a-z]{1,}"),
                               too_few = "align_start")
 
 # save --------------------------------------------------------------------
 
 write.csv2(d_source, file = paste(temp$dir_path, 
-                                  "data/data_blobs", "_", 
+                                  "data/data_blobs", "_",
                                   util$today(), 
                                   sep = ""))

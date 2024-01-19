@@ -88,7 +88,8 @@ for(x in 1:4){
          dpi = 100)  
   # plot colocalization class -----------------------------------------------
   source("points_analysis/plot_code/plot_colocalization_class.R")
-  p_colocalization_class$labels$caption <- paste0(c(temp_version, name$classif_short), collapse = "\n")
+  p_colocalization_class$labels$caption <- paste0(
+    c(temp_version, name$classif_short), collapse = "\n")
   ggsave(filename = paste0(path_out, up_dirs,"/",down_dirs[2],"/",
                            "plot_colocalization_class_", 
                            temp_version, "_",

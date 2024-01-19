@@ -143,8 +143,8 @@ d_pairs <- pairs %>%
 # export ------------------------------------------------------------------
 
 write.csv2(d_pairs, 
-           file = paste("blobs_analysis/data/data_pairs_preprocessed", 
-                        "_", util$today(), sep = ""))
+           file = paste("blobs_analysis/data/data_pairs_preprocessed", "_",
+                        temp_classif_short, "_", util$today(), sep = ""))
 
 # validation --------------------------------------------------------------
 
