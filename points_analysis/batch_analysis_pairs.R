@@ -19,7 +19,7 @@ name$classif_short = util$name_shorter_classif(temp_classif)
 
 # output ------------------------------------------------------------------
 
-path_out = paste0(getwd(),"/analysis_pairs_result/")
+path_out = paste0(getwd(),"/analysis_pairs_result4/")
 up_dirs = name$classif_short
 down_dirs = c("result", "plots")
 
@@ -51,11 +51,11 @@ for(x in 1:4){
   source("points_analysis/read_preprocess.R")
   # run analysis ------------------------------------------------------------
   source("points_analysis/protagonist_real.R")
-  r_summary_raw_fixed <- r_summary_raw %>%
+  r_summary_raw_fixed <- r_summary %>%
     mutate(image = temp_version, classif = name$classif_short)
-  writexl::write_xlsx(r_summary_raw_fixed, 
+  writexl::write_xlsx(r_summary_raw_fixed,
                       path = paste0(path_out, up_dirs,"/",down_dirs[1],"/",
-                                    "summary_raw_", 
+                                    "summary_raw_",
                                     temp_version, "_",
                                     name$classif_short,
                                     ".xlsx"))
@@ -63,43 +63,44 @@ for(x in 1:4){
   source("points_analysis/get_r_class_matrix.R")
   r_class_matrix_raw_fixed <- r_class_matrix_raw %>%
     mutate(image = temp_version, classif = name$classif_short)
-  writexl::write_xlsx(r_class_matrix_raw_fixed, 
+  writexl::write_xlsx(r_class_matrix_raw_fixed,
                       path = paste0(path_out, up_dirs,"/",down_dirs[1],"/",
-                                    "r_class_matrix_", 
+                                    "r_class_matrix_",
                                     temp_version, "_",
                                     name$classif_short,
                                     ".xlsx",
                                     collapse = ""))
-  # plot pairs colored ------------------------------------------------------
-  source("points_analysis/plot_code/plot_pairs_colored.R") #d_pairs
-  p_pairs_colored$labels$caption <- 
-    paste0(c(temp_version, name$classif_short), collapse = "\n")
-  ggsave(filename = paste0(path_out, up_dirs,"/",down_dirs[2],"/",
-                           "plot_pairs_colored_", 
-                           temp_version, "_", name$classif_short,
-                           ".pdf",
-                           collapse = ""), 
-         plot = p_pairs_colored,
-         device = "pdf",
-         scale = 1,
-         width = 8,
-         height = 8,
-         units = "in",
-         dpi = 100)  
-  # plot colocalization class -----------------------------------------------
-  source("points_analysis/plot_code/plot_colocalization_class.R")
-  p_colocalization_class$labels$caption <- paste0(
-    c(temp_version, name$classif_short), collapse = "\n")
-  ggsave(filename = paste0(path_out, up_dirs,"/",down_dirs[2],"/",
-                           "plot_colocalization_class_", 
-                           temp_version, "_",
-                           name$classif_short,
-                           ".pdf",
-                           collapse = ""), 
-         plot = p_colocalization_class,
-         device = "pdf",
-         scale = 1,
-         width = 8,
-         height = 8,
-         units = "in",
-         dpi = 100) }
+  # # plot pairs colored ------------------------------------------------------
+  # source("points_analysis/plot_code/plot_pairs_colored.R")
+  # p_pairs_colored$labels$caption <- 
+  #   paste0(c(temp_version, name$classif_short), collapse = "\n")
+  # ggsave(filename = paste0(path_out, up_dirs,"/",down_dirs[2],"/",
+  #                          "plot_pairs_colored_", 
+  #                          temp_version, "_", name$classif_short,
+  #                          ".pdf",
+  #                          collapse = ""), 
+  #        plot = p_pairs_colored,
+  #        device = "pdf",
+  #        scale = 1,
+  #        width = 8,
+  #        height = 8,
+  #        units = "in",
+  #        dpi = 100)  
+  # # plot colocalization class -----------------------------------------------
+  # source("points_analysis/plot_code/plot_colocalization_class.R")
+  # p_colocalization_class$labels$caption <- paste0(
+  #   c(temp_version, name$classif_short), collapse = "\n")
+  # ggsave(filename = paste0(path_out, up_dirs,"/",down_dirs[2],"/",
+  #                          "plot_colocalization_class_", 
+  #                          temp_version, "_",
+  #                          name$classif_short,
+  #                          ".pdf",
+  #                          collapse = ""), 
+  #        plot = p_colocalization_class,
+  #        device = "pdf",
+  #        scale = 1,
+  #        width = 8,
+  #        height = 8,
+  #        units = "in",
+  #        dpi = 100) 
+  }

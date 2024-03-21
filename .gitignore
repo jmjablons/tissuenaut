@@ -51,10 +51,25 @@ rsconnect/
 # source Data
 data_source/*
 *source_data*
+*linked*
+*_links*
 
 # results
 */data/*
 */plot/*
 *data*
+*.jpg
+*.png
+*.pdf
+*.csv
+*.xlsx
+*result*
+*.pptx
 
 #settings
+settings_*
+*settings*
+name*
+
+#outdated
+*outdated*

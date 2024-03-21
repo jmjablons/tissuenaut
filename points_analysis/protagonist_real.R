@@ -1,11 +1,14 @@
 
 source("points_analysis/name.R")
 
+# total -------------------------------------------------------------------
+
+all_girls <- d_new_fixed$key_new %>% unique()
+all_boys <- d_ref_fixed$key_ref %>% unique()
+
 # out ---------------------------------------------------------------------
 
-combinations <- list()
-#w_check <- list()
-pairs <- list()
+#combinations <- list()
 
 combinations <- map_df(1:nrow(d_new_fixed), function(i) {
   d_new_fixed[i,] %>% 
@@ -20,78 +23,62 @@ combinations <- map_df(1:nrow(d_new_fixed), function(i) {
                                      0, val$threshold_value, val$p),
            dist_x < (max_caliper_new/2),
            dist_y < (max_caliper_new/2)) %>%
-    ungroup()})
+    ungroup()}) %>% unique()
 
-# distance ----------------------------------------------------------------
+# combinations$key_ref %>% sort() %>% duplicated() %>% which() %>% length()
+# combinations$key_new %>% sort() %>% duplicated() %>% which() %>% length()
 
-combinations_softmaxed <- combinations %>%
+cat("/n TROUBLESHOOT /n")
+
+# combinations %>%
+#   group_by(val_1 = pmin(key_new, key_ref), val_2 = pmax(key_new, key_ref)) %>%
+#   summarise(n = n(), .groups = "drop") %>% 
+#   filter(n > 1)
+
+potential_playgirls <- combinations %>%
+  group_by(key_new) %>%
+  summarise(n = n(), .groups = "drop") %>% 
+  filter(n > 1) %>%
+  select(key_new) %>% unlist()
+
+potential_playboys <- combinations %>%
   group_by(key_ref) %>%
-  mutate(softmax_dist = softmax(-dist)) %>%
-  ungroup() %>%
-  arrange(key_ref)
+  summarise(n = n(), .groups = "drop") %>% 
+  filter(n > 1) %>%
+  select(key_ref) %>% unlist()
 
-# # check
-# w_check$match_unsure_all <- combinations_softmaxed %>% filter(softmax_dist < 1)
-# w_check$match_unsure_middle <- combinations_softmaxed %>%
-#   filter(softmax_dist < 0.9, softmax_dist > 0.2)
-# w_check$match_suspicious <- combinations_softmaxed %>%
-#   filter(dist > 5, softmax_dist > 0.10)
+faithful_couples <- combinations %>%
+  filter(key_ref %!in% potential_playboys) %>%
+  filter(key_new %!in% potential_playgirls)
 
-# cutout ------------------------------------------------------------------
+# faithful_couples$key_new %>% duplicated() %>% which()
+# faithful_couples$key_ref %>% duplicated() %>% which()
 
-pairs <- combinations_softmaxed %>%
-  ungroup() %>%
-  arrange(dist) %>%
-  filter(softmax_dist == max(softmax_dist), .by = "key_new") %>%
-  filter(softmax_dist == max(softmax_dist), .by = "key_ref") %>%
-  arrange(key_new)
+girls_faithful <- faithful_couples$key_new %>% unique()
+boys_faithful <- faithful_couples$key_ref %>% unique()
 
-# pairs analysis ----------------------------------------------------------
+girls_involved <- combinations$key_new %>% unique()
+boys_involved <- combinations$key_ref %>% unique()
 
-pairs_index <- pairs %>%
-  select(key_new, key_ref)
+# definitely single -------------------------------------------------------
 
-# check duplicates
-stopifnot(!any(duplicated(pairs_index$key_ref)))
+girls_single <- setdiff(all_girls, girls_involved)
+boys_single <- setdiff(all_boys, boys_involved)
 
-#w_check$duplicates_key_new <- pairs_index$key_new[duplicated(pairs_index$key_new)]
+# uncertain ---------------------------------------------------------------
 
-##TODO Decide what to do with duplicates
+girls_uncertain <- setdiff(girls_involved, girls_faithful)
+boys_uncertain <- setdiff(boys_involved, boys_faithful)
 
-pairs_unpaired <- list(
-  ref = setdiff(unique(d_ref_fixed$key_ref), pairs_index$key_ref),
-  new = setdiff(unique(d_new_fixed$key_new), pairs_index$key_new))
+# analysis ----------------------------------------------------------------
 
-pairs_indexed <-
-  pairs_index %>%
-  bind_rows(tibble(key_ref = pairs_unpaired$ref, key_new = NA)) %>%
-  bind_rows(tibble(key_new = pairs_unpaired$new, key_ref = NA)) %>%
-  arrange(key_ref) %>%
-  rowwise() %>%
-  mutate(paired = all(!is.na(c(key_new, key_ref)))) %>%
-  ungroup()
+dedust <- function(v){length(unique(v))}
 
-d_pairs <- pairs_indexed %>%
-  left_join(d_new_fixed) %>%
-  left_join(d_ref_fixed) %>%
-  mutate(pair_index = ifelse(!is.na(key_new) & 
-                               !is.na(key_ref), 1, 0)) %>%
-  mutate(pair_index = ifelse(!is.na(key_new) & 
-                               !is.na(key_ref), cumsum(pair_index), NA))
-
-# cross validation --------------------------------------------------------
-
-r_summary_raw <- pairs_indexed %>%
-  summarise(n_unpaired_new = length(which(is.na(key_ref))),
-            n_unpaired_ref = length(which(is.na(key_new))),
-            #n_unpaired = length(which(paired == F)),
-            n_doubled_ref = length(which(duplicated(key_ref) & !is.na(key_ref))),
-            n_doubled_new = length(which(duplicated(key_new) & !is.na(key_new))),
-            n_paired_without_doubled = length(
-              which(!duplicated(key_new) & !is.na(key_new) & paired == T)),
-            n_paired_with_doubled = length(which(paired == T)),
-            n_ref = length(which(!is.na(key_ref))),
-            n_new = length(unique(key_new)))
-
-r_summary_prec <- r_summary_raw %>%
-  mutate_all(~(.x/n_ref)*100)
+r_summary <- list(
+  pairs = faithful_couples %>% unique() %>% nrow(),
+  all_new = dedust(all_girls),
+  all_ref = dedust(all_boys),
+  new_uncertain = dedust(girls_uncertain),
+  ref_uncertain = dedust(boys_uncertain),
+  new_single = dedust(girls_single),
+  ref_single = dedust(boys_single)) %>% as_tibble()

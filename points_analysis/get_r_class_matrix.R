@@ -1,22 +1,34 @@
 
-#t_n_ref <- r_summary_raw$n_ref
-  
-r_class_matrix_raw <- d_pairs %>%
+temp_singles <- d_new_fixed %>%
+  filter(key_new %in% girls_single) %>%
+  mutate(class_ref = NA) %>%
+  bind_rows(
+    d_ref_fixed %>%
+      filter(key_ref %in% boys_single) %>%
+      mutate(class_new = NA))
+
+# temp_uncertain <- d_new_fixed %>%
+#   filter(key_new %in% girls_uncertain) %>%
+#   select(key_new, class_new) %>%
+#   mutate(class_ref = "uncertain") %>%
+#   bind_rows(
+#     d_ref_fixed %>%
+#       filter(key_ref %in% boys_uncertain) %>%
+#       select(key_ref, class_ref) %>%
+#       mutate(class_new = "uncertain")) %>%
+#   mutate(pair_index = -1)
+
+r_class_matrix_raw <- faithful_couples %>%
+  bind_rows(temp_singles) %>%
+  select(key_new, key_ref, class_ref, class_new) %>%
+  mutate(pair_index = ifelse(!is.na(key_new) & 
+                               !is.na(key_ref), 1, 0)) %>%
+  mutate(pair_index = ifelse(!is.na(key_new) & 
+                               !is.na(key_ref), cumsum(pair_index), NA)) %>%
+  # bind_rows(temp_uncertain) %>%
   group_by(class_ref, class_new) %>%
   summarise(n = length(pair_index)) %>%
   ungroup() %>%
   #mutate(n = (n/t_n_ref)*100) %>%
-  tidyr::pivot_wider(values_from = n, names_from = class_new) %>%
-  mutate(total_ref = rowSums(across(where(is.numeric)), na.rm = T))
-
-#TODO contains duplicates
-    
-# summarise(n_unpaired_ref = length(which(is.na(key_ref))),
-#           n_unpaired_new = length(which(is.na(key_new))),
-#           #n_unpaired = length(which(paired == F)),
-#           n_doubled_ref = length(which(duplicated(key_ref) & !is.na(key_ref))),
-#           n_doubled_new = length(which(duplicated(key_new) & !is.na(key_new))),
-#           n_paired_without_doubled = length(which(!duplicated(key_new) & !is.na(key_new) & paired == T)),
-#           n_paired_with_doubled = length(which(paired == T)),
-#           n_ref = length(which(!is.na(key_ref))),
-#           n_new = length(unique(key_new)))
+  tidyr::pivot_wider(values_from = n, names_from = class_new) #%>%
+  # mutate(total_ref = rowSums(across(where(is.numeric)), na.rm = T))

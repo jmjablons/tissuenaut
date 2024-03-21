@@ -4,21 +4,18 @@
 # init --------------------------------------------------------------------
 
 source("main_init.R") #dependencies #util #variables
-source("blobs_analysis/blob_source_data.R") #temp$files_manual etc 
+source("blobs_analysis/blob_links.R") #link$files_manual etc 
 source("blobs_analysis/name.R")
-
-#temp <- list()
-temp$dir_path = "blobs_analysis/" # or set wd
 
 # dir tree ----------------------------------------------------------------
 
-#dir.create("blobs_analysis/data/")
-#dir.create("blobs_analysis/result/")
-#dir.create("blobs_analysis/plot/")
+dir.create("blobs_analysis/data/")
+dir.create("blobs_analysis/result/")
+dir.create("blobs_analysis/plot/")
 
 # read --------------------------------------------------------------------
 
-d_source <- temp$files_manual %>% #set in 'blob_source_data.R'
+d_blobs_raw <- link$files_manual %>% #set in 'blob_source_data.R'
   as.data.frame() %>%
   rename(filepath = '.') %>%
   rowwise() %>%
@@ -31,12 +28,12 @@ d_source <- temp$files_manual %>% #set in 'blob_source_data.R'
 
 # preprocess --------------------------------------------------------------
 
-# names(d_source) %<>%
+# names(d_blobs_raw) %<>%
 #   stringr::str_replace_all("\\s", "_") %>% 
 #   stringr::str_replace_all("\\:", "") %>%
 #   stringr::str_replace_all("\\µ", "u")
 
-d_source = d_source %>%
+d_blobs_raw = d_blobs_raw %>%
   rename_with(tolower) %>%
   mutate(image = gsub(x = image, 
                        pattern = "\\.ome.tif", 
@@ -53,7 +50,7 @@ d_source = d_source %>%
 
 # save --------------------------------------------------------------------
 
-write.csv2(d_source, file = paste(temp$dir_path, 
-                                  "data/data_blobs", "_",
-                                  util$today(), 
-                                  sep = ""))
+write.csv2(d_blobs_raw, file = paste(link$dir_path, "data/data_blobs_raw", sep = ""))
+
+link$files_manual %>%
+  write.table(paste(link$dir_path, "data/data_blobs_raw_info_source.txt", sep = ""))

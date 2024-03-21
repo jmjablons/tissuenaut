@@ -8,11 +8,17 @@ softmax <- function(x) exp(x - min(x)) / sum(exp(x - min(x)))
 
 sigmoid <- function(x) 1 / (1 + exp(-x))
 
+# minkowski_distance <- function(x, x1, y, y1, p_value) {
+#   root_value <- 1 / as.numeric(p_value)
+#   result <- sum(c((abs(x - x1) ^ root_value), 
+#                   (abs(y - y1) ^ root_value)))
+#   return(result)}
+
 minkowski_distance <- function(x, x1, y, y1, p_value) {
   root_value <- 1 / as.numeric(p_value)
-  result <- sum(c((abs(x - x1) ^ root_value), 
-                  (abs(y - y1) ^ root_value)))
-  return(result)}
+  result <- ((abs(x - x1) ^ p_value) + (abs(y - y1) ^ p_value)) ^ root_value
+  return(result)
+}
 
 radius <- function(a){sqrt((a/pi))}
 

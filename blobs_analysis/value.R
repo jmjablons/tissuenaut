@@ -17,7 +17,8 @@ name <- list(
   area_cells = "new_nucleus_area",
   area_blolbs = "ref_area_um^2",
   group_to_compare = c("new","ref"),
-  without_this_class = "smooth")
+  morphology_measures = c("maxcaliper","mincaliper","area", "circularity"),
+  without_this_class = c("smooth", "weak_stain2"))
 
 name_roi <- list()
 name_roi$roi_position_columns <- c(x0 = "startx_px", 
@@ -28,3 +29,17 @@ name_roi$roi_position_um_columns <- sprintf("%s_um",name_roi$roi_position_column
 names(name_roi$roi_position_um_columns) = names(name_roi$roi_position_columns)
 # name_roi$roi_position_um_columns <- stringr::str_replace_all(
 #   name_roi$roi_position_columns, pattern = "$","_um")
+
+# variables ---------------------------------------------------------------
+
+if(!exists("temp")){
+  temp <- list()
+} else {
+  message("*temp* object exists. Overwriting the existing variable.")}
+
+temp$classesin = c("sharp", "smooth",
+                    "strong", "weak",
+                    "weak_stain2", "strong_stain2",
+                    "strong2", "weak2")
+temp$classesout = c("background", "artifact",
+                     "artifact2", "noise", "Ignore*")
