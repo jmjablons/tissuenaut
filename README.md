@@ -10,14 +10,14 @@
 
 ## Contents
 
--   [Installation](#installation)
--   [Features](#features)
+-   [Installation]
+-   [Features]
     -   [Pairwise Neuronal Co-localization Analysis](#pairwise-neuronal-colocalization-analysis)
     -   [Class Matrix Generation for Cross-Validation](#class-matrix-generation-for-cross-validation)
     -   [Blob Analysis for Morphological Comparison](#blob-analysis-for-morphological-comparison)
     -   [Image Downsizing and Saving](#image-downsizing-and-saving)
 
-## **Installation** {#installation}
+## **Installation**
 
 Ready to go
 
@@ -33,7 +33,7 @@ install.packages("purrr")
 install.packages("imager")
 ```
 
-## Features {#features}
+## Features
 
 -   **Pairwise Neuronal Co-localization Analysis**: This function facilitates the analysis of neuronal co-localization within tissue images by comparing points based on their coordinates in a 2-dimensional space. It processes rows of two data frames (`d_new_fixed` and `d_ref_fixed`), calculating Minkowski distances and filtering based on specified thresholds to identify co-localized neuron pairs.
 
