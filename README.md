@@ -10,8 +10,8 @@
 
 ## Contents
 
--   [Installation]
--   [Features]
+-   Installation
+-   Features
     -   [Pairwise Neuronal Co-localization Analysis](#pairwise-neuronal-colocalization-analysis)
     -   [Class Matrix Generation for Cross-Validation](#class-matrix-generation-for-cross-validation)
     -   [Blob Analysis for Morphological Comparison](#blob-analysis-for-morphological-comparison)
